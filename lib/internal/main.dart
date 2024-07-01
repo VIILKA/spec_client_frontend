@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:spec_client_app/features/auth/presentation/carousel/carousel.dart';
+import 'package:spec_client_app/features/auth/presentation/bloc/send_message/send_message_bloc.dart';
+import 'package:spec_client_app/features/auth/presentation/bloc/send_message/send_message_event.dart';
+import 'package:spec_client_app/features/auth/presentation/testpage/mess_page.dart';
+import 'package:spec_client_app/internal/injection_container.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDependencies();
   runApp(const MyApp());
 }
 
@@ -11,15 +16,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: Size(375, 812),
-      builder: (context, child) => MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-            fontFamily: "SF-Pro-Display"),
-        home: CarouselPage(),
+    return BlocProvider<SendMessageBloc>(
+      create: (context) => sl()..add(GetMessage()),
+      child: ScreenUtilInit(
+        designSize: Size(375, 812),
+        builder: (context, child) => MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+              fontFamily: "SF-Pro-Display"),
+          home: TestPage(),
+        ),
       ),
     );
   }
