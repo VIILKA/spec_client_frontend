@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spec_client_app/features/auth/presentation/bloc/send_message/send_message_bloc.dart';
 import 'package:spec_client_app/features/auth/presentation/bloc/send_message/send_message_state.dart';
 
+@RoutePage()
 class TestPage extends StatelessWidget {
   const TestPage({super.key});
 

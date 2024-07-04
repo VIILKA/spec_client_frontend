@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:spec_client_app/core/resoures/data_state.dart';
 import 'package:spec_client_app/features/auth/data/data_source/remote/send_sms_register_api_service.dart';
-import 'package:spec_client_app/features/auth/data/dto/request/send_sms_req_dto.dart';
-import 'package:spec_client_app/features/auth/data/dto/response/message_req_dto.dart';
+import 'package:spec_client_app/features/auth/data/mappers/message_map.dart';
+import 'package:spec_client_app/features/auth/domain/entities/request/send_sms_req.dart';
+import 'package:spec_client_app/features/auth/domain/entities/response/message_ent.dart';
 import 'package:spec_client_app/features/auth/domain/repository/response/message_rep.dart';
 
 class MessageRepositoryImpl implements MessageRepository {
@@ -13,16 +14,20 @@ class MessageRepositoryImpl implements MessageRepository {
   MessageRepositoryImpl(this._sendSmsRegisterApiService);
 
   @override
-  Future<DataState<MessageDto>> getMessage() async {
+  Future<DataState<MessageEnt>> getMessage(
+      SendSMSReqEntity sendSMSReqEntity) async {
     try {
-      SendSMSReqDto sendSMSReqDto =
-          SendSMSReqDto(phoneNumber: '9998482468246', userType: 'customer');
-      final httpResponse =
-          await _sendSmsRegisterApiService.getMessage(sendSMSReqDto);
+      print(sendSMSReqEntity.toString());
+      final httpResponse = await _sendSmsRegisterApiService
+          .getMessage(sendSMSReqEntity.fromEntity());
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
+        print(DataSuccess(httpResponse.data.message));
         return DataSuccess(httpResponse.data);
       } else {
+        print(DioException(
+            error: httpResponse.response.statusMessage,
+            requestOptions: httpResponse.response.requestOptions));
         return DataFailed(DioException(
             error: httpResponse.response.statusMessage,
             response: httpResponse.response,
@@ -30,6 +35,7 @@ class MessageRepositoryImpl implements MessageRepository {
             requestOptions: httpResponse.response.requestOptions));
       }
     } on DioException catch (e) {
+      print(e);
       return DataFailed(e);
     }
   }

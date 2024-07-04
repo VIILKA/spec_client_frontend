@@ -8,11 +8,13 @@ class SendMessageBloc extends Bloc<SendMessageEvent, SendMessageState> {
   final GetMessageUsecase _getMessageUsecase;
 
   SendMessageBloc(this._getMessageUsecase) : super(const SendMessageLoading()) {
-    on<GetMessage>(onGetArticles);
+    on<GetMessageEvent>(onGetMessage);
   }
 
-  void onGetArticles(GetMessage event, Emitter<SendMessageState> emit) async {
-    final dataState = await _getMessageUsecase();
+  void onGetMessage(
+      GetMessageEvent event, Emitter<SendMessageState> emit) async {
+    final dataState =
+        await _getMessageUsecase.call(params: event.sendSMSReqEntity);
 
     if (dataState is DataSuccess) {
       print(dataState.data!.message);
